@@ -1,0 +1,20 @@
+version: "0.2"
+ignorePaths: []
+dictionaryDefinitions: []
+dictionaries:
+  - python
+  - python-common
+  - software-tools
+  - words
+  - cpp-compound-words
+words:
+  - iconset
+  - iconutil
+  - killall
+  - LSUI
+  - onefile
+  - pyupgrade
+  - Resizability
+  - uppercased
+ignoreWords: []
+import: []
