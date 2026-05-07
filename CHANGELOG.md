@@ -8,8 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [1.1.0] - 2026-05-07
 
 ### Added
-- **配布版 `.app.zip` を GitHub Release に自動添付**(タグ push で `xcodebuild` → ditto による zip 化 → リリースに添付)
+- **配布版 `.app.zip` を GitHub Release に自動添付**(タグ push で `xcodebuild` → アドホック署名 → ditto による zip 化 → リリースに添付)
 - `make build` / `make package` ターゲット(Debug ビルド / Release ビルド + zip 化)
+- 配布版 `.app` の post-build アドホック署名(`codesign --force --deep --sign -`)。
+  リンカ最小署名のままだと Gatekeeper に「壊れている」と判定されるため、
+  明示的な署名を再適用してリソース封印と Info.plist のバインドを確立
 
 ### Changed
 - Xcode プロジェクト (`PostureTimer.xcodeproj`) と `Assets.xcassets` をリポジトリに統合(リポジトリ単独で再現可能なビルド環境に)

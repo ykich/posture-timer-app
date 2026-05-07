@@ -49,9 +49,17 @@ macOS のメニューバーに常駐する着座タイマー。
 
 1. [Releases ページ](https://github.com/ykich/posture-timer-app/releases) から最新の `PostureTimer-vX.Y.Z.zip` をダウンロード
 2. zip を展開し、`PostureTimer.app` を `/Applications/` に配置
-3. **初回起動**: アイコンを **右クリック → 「開く」**(Gatekeeper の警告が出ますが、「開く」を選んでください)
-   - これは配布アプリが Apple のコード署名・公証(notarization)を経ていないためです
-   - 一度許可すれば次回以降は通常のダブルクリックで起動できます
+3. **ターミナルで以下を実行して隔離属性を削除**(初回のみ):
+
+   ```bash
+   xattr -cr /Applications/PostureTimer.app
+   ```
+
+4. アイコンをダブルクリックで起動
+
+> 配布アプリは Apple Developer Program での公証 (notarization) を行っていないため、ダウンロード後そのまま起動すると macOS が「壊れている」と表示する場合があります。`xattr -cr` でダウンロード時に付与される `com.apple.quarantine` 属性を削除することで起動できるようになります。
+>
+> Intel Mac など環境によっては、上記コマンドの代わりに **アイコンを右クリック → 「開く」** で起動できる場合もあります。
 
 ### ソースからビルド
 
