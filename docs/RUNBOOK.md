@@ -52,19 +52,27 @@ make install
 
 ## ダウンロード版の初回起動について
 
-GitHub Releases から取得した配布版 `.app` はコード署名・公証 (notarization) を行っていないため、
-初回起動時に「開発元を確認できません」という警告が出る。
+GitHub Releases から取得した配布版 `.app` は Apple Developer Program での公証 (notarization) を
+行っていない (アドホック署名のみ)。そのため、ダウンロード時に macOS が付与する
+`com.apple.quarantine` 属性により Gatekeeper に拒否され、
 
-回避方法:
+> "PostureTimer.app" は壊れているため開けません。 ゴミ箱に入れる必要があります。
 
-- アプリアイコンを **右クリック → 「開く」** を選択 → ダイアログで「開く」を確認
-- 一度許可すれば次回以降は通常のダブルクリックで起動可能
+というメッセージが表示される (特に Apple Silicon Mac で発生しやすい)。
 
-ターミナルから隔離属性を削除する方法もある:
+### 推奨: ターミナルで quarantine 属性を削除
 
 ```bash
 xattr -cr /Applications/PostureTimer.app
 ```
+
+実行後はダブルクリックで通常起動できる。
+
+### 補助手段: 右クリック → 開く
+
+Intel Mac など環境によっては、アイコンを右クリック → 「開く」 → ダイアログで「開く」を選択する
+ことで起動できる場合がある。Apple Silicon Mac では「壊れている」エラー時にこのオプションが
+表示されないことが多いため、上記の `xattr` コマンドが確実。
 
 ---
 

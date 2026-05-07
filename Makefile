@@ -27,10 +27,16 @@ package:
 		-scheme $(SCHEME) \
 		-configuration Release \
 		-derivedDataPath $(BUILD_DIR)/ \
-		CODE_SIGN_IDENTITY="-" \
+		CODE_SIGN_IDENTITY="" \
+		CODE_SIGN_STYLE=Manual \
+		DEVELOPMENT_TEAM="" \
 		CODE_SIGNING_REQUIRED=NO \
 		CODE_SIGNING_ALLOWED=NO \
 		build
+	codesign --force --deep --sign - \
+		--options=runtime \
+		$(RELEASE_APP)
+	codesign --verify --verbose=2 $(RELEASE_APP)
 	mkdir -p dist
 	ditto -c -k --keepParent $(RELEASE_APP) dist/$(APP_NAME).zip
 	@echo "パッケージ作成完了: dist/$(APP_NAME).zip"
