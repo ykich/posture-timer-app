@@ -13,5 +13,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build (swift build)
-        run: swift build --package-path swift/
+      - name: Build (xcodebuild)
+        run: |
+          xcodebuild \
+            -project PostureTimer.xcodeproj \
+            -scheme PostureTimer \
+            -configuration Debug \
+            -derivedDataPath build/ \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            build

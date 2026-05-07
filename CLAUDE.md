@@ -31,12 +31,11 @@ docs/<issue番号>-<name>   # ドキュメントのみの変更
 
 ### コミット前チェック
 
-コミット前に必ず以下を実行すること：
+コミット前に必ず以下を実行してビルドエラーがないことを確認すること:
 
 ```bash
-# Swift のビルド確認（Xcode で Cmd+B）
-# または swift build でコンパイルエラーがないことを確認
-swift build --package-path swift/
+make build
+# または Xcode で Cmd+B
 ```
 
 ---
@@ -55,7 +54,6 @@ swift build --package-path swift/
 | ファイル | 説明 |
 | --- | --- |
 | docs/SPEC.md | アプリ仕様・機能構想の引き継ぎコンテキスト |
-| docs/RUNBOOK.md | ビルド・運用ガイド（Xcode セットアップ、起動手順） |
-| docs/SIT_STAND_RESEARCH.md | 座り・立ちのバランスに関する研究まとめ（タイマー間隔の根拠） |
-| swift/README.md | Swift 実装の詳細セットアップ手順 |
-| CHANGELOG.md | 変更履歴（Keep a Changelog 形式） |
+| docs/RUNBOOK.md | ビルド・運用ガイド(Xcode セットアップ、起動手順、リリース手順) |
+| docs/SIT_STAND_RESEARCH.md | 座り・立ちのバランスに関する研究まとめ(タイマー間隔の根拠) |
+| CHANGELOG.md | 変更履歴(Keep a Changelog 形式) |

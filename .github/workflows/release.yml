@@ -17,8 +17,22 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Build (swift build)
-        run: swift build --package-path swift/
+      - name: Build .app (xcodebuild)
+        run: |
+          xcodebuild \
+            -project PostureTimer.xcodeproj \
+            -scheme PostureTimer \
+            -configuration Release \
+            -derivedDataPath build/ \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Package .app as zip
+        run: |
+          mkdir -p dist
+          ditto -c -k --keepParent build/Build/Products/Release/PostureTimer.app "dist/PostureTimer-${GITHUB_REF_NAME}.zip"
 
       - name: Extract release notes from CHANGELOG.md
         id: changelog
@@ -33,6 +47,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           body: ${{ steps.changelog.outputs.notes }}
+          files: dist/PostureTimer-${{ github.ref_name }}.zip
           draft: true
           prerelease: ${{ contains(github.ref_name, '-') }}
           token: ${{ secrets.GITHUB_TOKEN }}

@@ -43,9 +43,19 @@ macOS のメニューバーに常駐する着座タイマー。
 
 ---
 
-## セットアップ
+## インストール
 
-`swift/README.md` および `docs/RUNBOOK.md` を参照してください。
+### リリース版から (推奨)
+
+1. [Releases ページ](https://github.com/ykich/posture-timer-app/releases) から最新の `PostureTimer-vX.Y.Z.zip` をダウンロード
+2. zip を展開し、`PostureTimer.app` を `/Applications/` に配置
+3. **初回起動**: アイコンを **右クリック → 「開く」**(Gatekeeper の警告が出ますが、「開く」を選んでください)
+   - これは配布アプリが Apple のコード署名・公証(notarization)を経ていないためです
+   - 一度許可すれば次回以降は通常のダブルクリックで起動できます
+
+### ソースからビルド
+
+`docs/RUNBOOK.md` を参照してください。
 
 ---
 
