@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.1.0] - 2026-05-07
+
+### Added
+- **配布版 `.app.zip` を GitHub Release に自動添付**(タグ push で `xcodebuild` → ditto による zip 化 → リリースに添付)
+- `make build` / `make package` ターゲット(Debug ビルド / Release ビルド + zip 化)
+
+### Changed
+- Xcode プロジェクト (`PostureTimer.xcodeproj`) と `Assets.xcassets` をリポジトリに統合(リポジトリ単独で再現可能なビルド環境に)
+- CI / Release ワークフローを `swift build` から `xcodebuild` ベースに変更
+- `make install` のビルド出力参照を DerivedData からリポジトリ内 `build/` に変更
+- README にダウンロード版の初回起動手順(右クリック→開く による Gatekeeper 回避)を追記
+- `docs/RUNBOOK.md` をリポジトリ統合後の手順に更新
+
+### Removed
+- `swift/Package.swift` および SwiftPM 関連ファイル(`swift/README.md`、`swift/Sources/PostureTimer/Resources/AppIcon.icns`、`swift/assets/`)。Xcode プロジェクトに一本化
+
 ## [1.0.0] - 2026-05-06
 
 Initial public release.

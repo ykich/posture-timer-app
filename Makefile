@@ -1,19 +1,47 @@
-.PHONY: install icon clear-icon-cache help
+.PHONY: build install package icon clear-icon-cache help
 
-DERIVED_DATA := $(HOME)/Library/Developer/Xcode/DerivedData
-APP_NAME     := PostureTimer
-DEBUG_APP    := $(shell echo $(DERIVED_DATA)/$(APP_NAME)-*/Build/Products/Debug/$(APP_NAME).app)
+APP_NAME      := PostureTimer
+PROJECT       := $(APP_NAME).xcodeproj
+SCHEME        := $(APP_NAME)
+BUILD_DIR     := build
+DEBUG_APP     := $(BUILD_DIR)/Build/Products/Debug/$(APP_NAME).app
+RELEASE_APP   := $(BUILD_DIR)/Build/Products/Release/$(APP_NAME).app
 
 ## ターゲット一覧を表示する
 help:
 	@grep -E '^##' Makefile | sed 's/## //'
 
+## Debug ビルドを実行する (build/Build/Products/Debug/)
+build:
+	xcodebuild \
+		-project $(PROJECT) \
+		-scheme $(SCHEME) \
+		-configuration Debug \
+		-derivedDataPath $(BUILD_DIR)/ \
+		build
+
+## Release ビルドを zip 化する (アドホック署名、配布用 / dist/ 配下に出力)
+package:
+	xcodebuild \
+		-project $(PROJECT) \
+		-scheme $(SCHEME) \
+		-configuration Release \
+		-derivedDataPath $(BUILD_DIR)/ \
+		CODE_SIGN_IDENTITY="-" \
+		CODE_SIGNING_REQUIRED=NO \
+		CODE_SIGNING_ALLOWED=NO \
+		build
+	mkdir -p dist
+	ditto -c -k --keepParent $(RELEASE_APP) dist/$(APP_NAME).zip
+	@echo "パッケージ作成完了: dist/$(APP_NAME).zip"
+
 ## Debug ビルドを /Applications/ へインストールする
-install:
+install: build
 	@if [ ! -d "$(DEBUG_APP)" ]; then \
-		echo "エラー: ビルドが見つかりません。先に Xcode でビルドしてください (Cmd+B)"; \
+		echo "エラー: ビルドが見つかりません: $(DEBUG_APP)"; \
 		exit 1; \
 	fi
+	rm -rf /Applications/$(APP_NAME).app
 	cp -R "$(DEBUG_APP)" /Applications/
 	@echo "インストール完了: /Applications/$(APP_NAME).app"
 

@@ -43,19 +43,23 @@ macOS のメニューバーに常駐する着座タイマーアプリ。
 ## ファイル構成
 
 ```
-swift/
-├── Package.swift
-├── README.md
-└── Sources/PostureTimer/
-    ├── PostureTimerApp.swift          # @main エントリポイント
-    ├── Models.swift                   # PostureState, AppConfig, フォーマッタ
-    ├── TimerManager.swift             # タイマー・状態管理 ObservableObject
-    ├── NotificationManager.swift      # UNUserNotificationCenter ラッパー
-    ├── HotkeyManager.swift            # グローバルホットキー
-    ├── LaunchAtLoginManager.swift     # LaunchAgent plist 管理
-    ├── MenuBarView.swift              # メニューバー UI
-    ├── SettingsViews.swift            # 設定画面（一般 / 通知 / ショートカット）
-    └── Resources/AppIcon.icns
+posture-timer-app/
+├── PostureTimer.xcodeproj            # Xcode プロジェクト
+├── Assets.xcassets/                  # アプリアイコン (AppIcon.appiconset)
+├── swift/Sources/PostureTimer/
+│   ├── PostureTimerApp.swift         # @main エントリポイント
+│   ├── Models.swift                  # PostureState, AppConfig, フォーマッタ
+│   ├── TimerManager.swift            # タイマー・状態管理 ObservableObject
+│   ├── NotificationManager.swift     # UNUserNotificationCenter ラッパー
+│   ├── HotkeyManager.swift           # グローバルホットキー
+│   ├── LaunchAtLoginManager.swift    # LaunchAgent plist 管理
+│   ├── MenuBarView.swift             # メニューバー UI
+│   └── SettingsViews.swift           # 設定画面 (一般 / 通知 / ショートカット)
+├── .github/workflows/                # CI / Release ワークフロー
+├── docs/                             # ドキュメント
+├── assets/                           # アイコン素材 (icon.png 等)
+├── Makefile                          # build / install / package / icon タスク
+└── CHANGELOG.md
 ```
 
 ## データ保存先

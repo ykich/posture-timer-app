@@ -16,91 +16,80 @@ PostureTimer は初回起動時に macOS の通知許可ダイアログを表示
 
 ---
 
-## Swift 版のビルド
+## ソースからのビルド
 
-Swift 版ソースは `swift/` ディレクトリに格納されている。
-`swift build` ではアプリバンドル（.app）を生成できないため、Xcode でのビルドが必要。
-
-### Xcode プロジェクト初期セットアップ（初回のみ）
-
-1. Xcode を起動 → File > New > Project > macOS > App
-2. 以下を設定:
-   - Product Name: `PostureTimer`
-   - Interface: SwiftUI
-   - Language: Swift
-3. 自動生成された `ContentView.swift` 等を削除
-4. `swift/Sources/PostureTimer/` 以下の全 `.swift` ファイルを**参照として**追加（下記参照）
-5. ターゲット設定:
-   - General > Supported Destinations に「Mac」を追加（iOS は削除）
-   - Deployment Target: macOS 13.0
-   - Signing: Automatically manage signing（Team に Apple ID を設定）
-6. `Info.plist` に `LSUIElement = YES` を追加（Dock アイコン非表示）
-
-#### ソースファイルの参照追加
-
-ファイルをコピーせず参照として追加することで、リポジトリの編集が即座に Xcode に反映される。
-
-1. Xcode のメニュー **File > Add Files to "PostureTimer"...** を開く
-2. `swift/Sources/PostureTimer/` 内のすべての `.swift` ファイルを選択
-3. Action: 「Reference files in place」を選択する
-4. **Add** をクリック
-
-> すでにコピーしてしまった場合は、プロジェクトナビゲーターで該当ファイルを Delete →
-> 「Remove Reference」を選んだあと、上記手順で再追加する。
-
-### アプリアイコンの設定
-
-通知や Finder に表示されるアイコンを設定する。
-
-#### 1. アイコン画像を用意する
-
-1024×1024 px の PNG を1枚用意する。`assets/icon.png` を流用可能。
-
-#### 2. Assets.xcassets に AppIcon を追加する
-
-1. Xcode のプロジェクトナビゲーターで `Assets.xcassets` を選択
-   - 存在しない場合は **File > New > File > Asset Catalog** で作成
-2. 左下の **「+」** → **App Icons and Launch Images > New macOS App Icon** を選択
-3. `Mac 512pt 2x`（1024×1024）欄に PNG をドラッグ＆ドロップ
-
-#### 3. Build Settings を確認する
-
-**TARGETS > Build Settings > Asset Catalog Compiler** の
-`Primary App Icon Set Name` が `AppIcon` になっていることを確認する。
-
-### ビルド・実行
+リポジトリをクローン後、Xcode プロジェクトを直接開く。
 
 ```bash
-# Xcode GUI でビルド
+git clone https://github.com/ykich/posture-timer-app.git
+cd posture-timer-app
+open PostureTimer.xcodeproj
+```
+
+### Xcode GUI でビルド・実行
+
+```text
 Cmd + B   # ビルドのみ
 Cmd + R   # ビルド + 実行
 ```
 
-### Applications へのインストール
+### コマンドラインからのビルド
+
+```bash
+make build       # Debug ビルド (build/Build/Products/Debug/PostureTimer.app)
+make package     # Release ビルド + zip 化 (dist/PostureTimer.zip)
+```
+
+### `/Applications/` へのインストール
 
 ```bash
 make install
 ```
 
-> Xcode でビルド（Cmd+B）済みであることが前提。ビルドが見つからない場合はエラーが表示される。
+`make install` は内部で `make build` を実行してから `/Applications/` にコピーする。
 
 ---
 
-## アイコンの作り直し
+## ダウンロード版の初回起動について
 
-`assets/icon.png` を変更した後、以下のコマンドで iconset と icns を再生成する。
+GitHub Releases から取得した配布版 `.app` はコード署名・公証 (notarization) を行っていないため、
+初回起動時に「開発元を確認できません」という警告が出る。
+
+回避方法:
+
+- アプリアイコンを **右クリック → 「開く」** を選択 → ダイアログで「開く」を確認
+- 一度許可すれば次回以降は通常のダブルクリックで起動可能
+
+ターミナルから隔離属性を削除する方法もある:
+
+```bash
+xattr -cr /Applications/PostureTimer.app
+```
+
+---
+
+## アプリアイコン
+
+アプリアイコンは `Assets.xcassets/AppIcon.appiconset/` に格納されている。
+Xcode プロジェクトの **TARGETS > Build Settings > Asset Catalog Compiler** の
+`Primary App Icon Set Name` で `AppIcon` を参照している。
+
+### アイコン画像の差し替え
+
+`assets/icon.png` を新しい画像に差し替えた後、以下のコマンドで `Assets.xcassets` 用の
+各サイズ画像と `assets/PostureTimer.icns` を再生成する。
 
 ```bash
 make icon
 ```
 
-> `icon.png` は 1024x1024 以上を推奨。
+> `icon.png` は 1024×1024 以上を推奨。
+> 生成された `assets/PostureTimer.iconset/*.png` を `Assets.xcassets/AppIcon.appiconset/` に
+> 適切に配置する必要がある(Xcode の Assets エディタからドラッグ&ドロップが簡単)。
 
----
+### Finder のアイコンキャッシュをクリア
 
-## Finder のアイコンキャッシュをクリア
-
-アイコンが古いまま表示される場合：
+アイコンが古いまま表示される場合:
 
 ```bash
 make clear-icon-cache
@@ -108,17 +97,31 @@ make clear-icon-cache
 
 ---
 
-## リリース（GitHub Release の作成）
+## リリース (GitHub Release の作成)
 
-`v*` タグをプッシュすると GitHub Actions が自動でリリースを作成する。
+`v*` タグをプッシュすると GitHub Actions が自動でビルド・パッケージング・ドラフトリリースの作成を行う。
 
 ### 手順
 
-1. `CHANGELOG.md` の `[Unreleased]` セクションに変更内容を記載済みであることを確認
-2. `CHANGELOG.md` の `[Unreleased]` を新バージョンに書き換え（日付を追記）
-3. コミットしてタグを作成・プッシュ
+1. `CHANGELOG.md` に新バージョンのエントリを追加(`[X.Y.Z] - YYYY-MM-DD` 形式)
+2. 変更をコミットして main にマージ
+3. タグを作成・プッシュ
 
 ```bash
 git tag v1.1.0
 git push origin v1.1.0
 ```
+
+4. GitHub Actions が完了するとドラフトリリースが作成される
+5. リリースページで内容を確認のうえ、ドラフトを公開する
+
+```bash
+gh release edit v1.1.0 --draft=false --latest
+```
+
+### 自動添付されるアセット
+
+- `dist/PostureTimer-vX.Y.Z.zip` — アドホック署名済みの `.app` バンドル(zip)
+
+> CI 環境ではコード署名と公証は行わない(個人開発前提)。
+> 配布先のユーザーには README に記載した「右クリック → 開く」の手順を案内する。
