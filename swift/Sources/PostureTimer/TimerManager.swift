@@ -85,6 +85,11 @@ final class TimerManager: ObservableObject {
 
         checkAlert(sessionElapsed: sessionElapsed)
 
+        updateMenuBarTitle()
+    }
+
+    /// メニューバータイトルを現在の姿勢アイコン + 経過時間で更新する。
+    private func updateMenuBarTitle() {
         menuBarTitle = "\(state.icon) \(formatDuration(sessionElapsed))"
     }
 
@@ -142,6 +147,25 @@ final class TimerManager: ObservableObject {
         sessionStart = Date()
         lastSitAlertedAt = nil
         lastStandAlertedAt = nil
+    }
+
+    /// 現在の姿勢セッションのタイマーを 0 にリセットする。
+    ///
+    /// 姿勢（座り/立ち）と一時停止状態は維持し、経過時間と警告の発火状態だけをリセットする。
+    /// 一時停止中にリセットした場合は、再開時に `00:00` から再開する。
+    func reset() {
+        let now = Date()
+        sessionStart = now
+        sessionElapsed = 0
+        lastSitAlertedAt = nil
+        lastStandAlertedAt = nil
+        if paused {
+            // resume() が sessionStart += (再開時刻 - pauseStart) を行うため、
+            // pauseStart も now に揃えておくと再開時の経過時間が 0 になる。
+            pauseStart = now
+        } else {
+            updateMenuBarTitle()
+        }
     }
 
     /// 一時停止/再開を切り替える。
