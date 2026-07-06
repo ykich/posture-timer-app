@@ -49,6 +49,11 @@ struct MenuBarView: View {
       }
       .buttonStyle(MenuButtonStyle())
 
+      Button("リセット") {
+        timerManager.reset()
+      }
+      .buttonStyle(MenuButtonStyle())
+
       Button(timerManager.paused ? "再開" : "一時停止") {
         timerManager.togglePause()
       }

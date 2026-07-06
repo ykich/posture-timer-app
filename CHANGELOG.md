@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- **タイマーのリセット機能** — メニュー「リセット」で現在のセッション経過時間を `00:00` に戻す。
+  姿勢（座り/立ち）と一時停止状態は維持し、座り/立ち警告の発火状態もクリアする
+
 ## [1.1.0] - 2026-05-07
 
 ### Added
